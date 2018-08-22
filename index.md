@@ -107,9 +107,8 @@ Click the top right big red X
 ## run the following in cmd
 ## python -m pip install --upgrade pip
 ```
-## Install Packages
-
-** Notebook command **
+#### Install Packages
+**Notebook command **
 ```
 import sys
 !{sys.executable} -m pip install numpy
@@ -125,6 +124,129 @@ import sys
 !{sys.executable} -m pip install pandas
 !{sys.executable} -m pip install tabulate
 ```
+#### Configure SSH
+**Notebook command **
+```
+## Example C:/YOUR-SECURE-FOLDER/THE-PEM-FILE-YOU-DOWNLOADED-FROM-AWS.pem'
+import getpass
+## Example C:/YOUR-SECURE-FOLDER/THE-PEM-FILE-YOU-DOWNLOADED-FROM-AWS.pem'
+keyFile = input("Input location of .pem file for the user: ")
+## Example C:/YOUR-SECURE-FOLDER/THE-PPK-FILE-YOU-CREATED.ppk'
+PrivatekeyFile = input("Input location of .ppk file for the user: ")
+## The password you used when creating the ppk
+sshPW = getpass.getpass("Input the Password for the private ppk: ")
+username = str(input("User name (usually 'ec2-user'): ")  or "ec2-user")
+```
+
+#### Configure Python
+**Notebook command **
+```
+import sys
+## This is the main package
+## Boto3 is a python api for working with AWS services
+import boto3 
+import awscli
+import botocore
+
+## Boto Setup
+ec2 = boto3.resource('ec2')
+ec2client = boto3.client('ec2')
+from botocore.exceptions import ClientError
+## Connect using boto s3
+s3client = boto3.client('s3')
+s3 = boto3.resource('s3')
+s3_client = boto3.client('s3')
+rds = boto3.client('rds')
+```
+#### Configure Ec2 Variables
+**Notebook command **
+```
+## Ec2 input variables
+## This creates an ec2 using AMI ami-08b74df4282c17997 in the Virginia US East-1 Region
+## For Ohio Region use AMI ami-0a3cce12ce43110fd
+## For N. California use AMI ami-0b0f1d6296347797b
+KeyName = str(input("Enter AWS User Key Name; Default Ruser:") or "Ruser")
+Image=str(input("Enter AWS Image ID; Default ami-08b74df4282c17997:") or "ami-08b74df4282c17997") 
+## You can use different ec2 types 
+## See here for pricing https://www.ec2instances.info/
+InstanceType = str(input("Enter Type of Intance; Default t2.large:")  or "t2.large")
+VolumeSize = int(input("Enter EBS Volume Size in GB; Default 8GB:") or 8)
+TagsValue = str(input("Enter a tag value; RServer default:") or "RServer")
+TagsKey = str(input("Enter a Name for the Instance; RServer default:")  or "RServer")
+```
+
+#### Create Ec2
 **Notebook command**
-## Replace 'rserver' with the secure folder where you put putty
-Popen('C:/rserver/puttygen.exe')
+```
+## If everything went right above this makes your ec2 virtual machine
+ec2.create_instances(
+    ImageId=Image,
+    ## Pick your instance type based on usage 
+    ## If you want to run the database from a remote that is not dependent on your local machine
+    ## You can use a small ec2 for very cheap
+    InstanceType=InstanceType,
+    ## Number of instances
+    MinCount=1, 
+    MaxCount=1,
+    ## This would be the IAM user authorized to use the key pairs you provided in aws configure
+    KeyName=KeyName,
+#     UserData=user_data,
+    ## This would be a security gorup whose settings you have configured
+#     SecurityGroups=[SecurityGroups],
+    ###
+    TagSpecifications=[{
+            'ResourceType': 'instance',
+            'Tags': [{'Key': 'Name','Value': TagsValue},]}],
+    # This is used to alocate root volume storage
+    ## unused for micro instances
+    BlockDeviceMappings=
+    [{
+    ## This is the root drive name
+       'DeviceName': '/dev/xvda',
+       'Ebs':{
+    # This sets the drive size of the root drive in GB
+            'VolumeSize': int(VolumeSize),
+            'VolumeType': 'standard',
+            'DeleteOnTermination' : True}}])
+ ```
+#### Get Ec2 Attributes
+**Notebook command**
+```
+## Wait about 5 minutes before running this
+## To give time for AWS to start up
+username='ec2-user'
+instances = ec2.instances.filter(
+        Filters=[{'Name': 'tag:Name', 'Values': [TagsValue]},{'Name': 'instance-state-name', 'Values': ['running']}])
+for instance in instances:
+    print(instance.id, instance.instance_type,instance.tags)
+instance.load()
+secGroup=instance.security_groups[0]
+secGroupId=secGroup['GroupId']
+dns=instance.public_dns_name
+instanceid=instance.id
+instanceip=instance.public_ip_address
+dns_ssh=username+"@%s"%dns
+print("The Public DNS is: %s" %(dns))
+print("The SSH Access Is: %s" %(dns_ssh))
+print("The Instance ID is: %s" %(instanceid))
+print("The Instance IP is: %s" %(instanceip))
+```
+
+## Notebook command 
+## This will open access to Rstudio
+print(secGroupId)
+data = ec2client.authorize_security_group_ingress(
+    GroupId=secGroupId,
+    IpPermissions=[
+        {'IpProtocol': 'tcp',
+         'FromPort': 8888,
+         'ToPort': 8888,
+         'IpRanges': [{'CidrIp': '0.0.0.0/0'}]},
+        {'IpProtocol': 'tcp',
+         'FromPort': 8787,
+         'ToPort': 8787,
+         'IpRanges': [{'CidrIp': '0.0.0.0/0'}]}
+    ])
+
+
+
