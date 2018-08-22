@@ -26,11 +26,13 @@ AWSElasticBeanstalkFullAccess
 ```
 <img src="https://s3.amazonaws.com/teaching-aws/IAM5.PNG" width=60% height=60%>
 <img src="https://s3.amazonaws.com/teaching-aws/IAM6.PNG" width=60% height=60%>
+
 ## Create Secure Folder
 ** This will be for storing key pairs credentials**<br>
 ** Do so on your C drive or other secure drive**<br>
 ** Do not use your desktop**<br>
 ** Ideally do not use spaces or other chracters**
+
 ## Download Access Keys
 **VERY IMPORTANT**<br>
 **Download this file to a secure location**<br>
