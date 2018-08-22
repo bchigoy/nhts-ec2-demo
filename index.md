@@ -107,7 +107,7 @@ Click the top right big red X
 ## run the following in cmd
 ## python -m pip install --upgrade pip
 ```
-#### Install Packages
+### Install Packages
 **Notebook command **
 ```
 import sys
@@ -124,7 +124,7 @@ import sys
 !{sys.executable} -m pip install pandas
 !{sys.executable} -m pip install tabulate
 ```
-#### Configure SSH
+### Configure SSH
 **Notebook command **
 ```
 ## Example C:/YOUR-SECURE-FOLDER/THE-PEM-FILE-YOU-DOWNLOADED-FROM-AWS.pem'
@@ -138,7 +138,7 @@ sshPW = getpass.getpass("Input the Password for the private ppk: ")
 username = str(input("User name (usually 'ec2-user'): ")  or "ec2-user")
 ```
 
-#### Configure Python
+### Configure Python
 **Notebook command **
 ```
 import sys
@@ -158,7 +158,7 @@ s3 = boto3.resource('s3')
 s3_client = boto3.client('s3')
 rds = boto3.client('rds')
 ```
-#### Configure Ec2 Variables
+### Configure Ec2 Variables
 **Notebook command **
 ```
 ## Ec2 input variables
@@ -175,7 +175,7 @@ TagsValue = str(input("Enter a tag value; RServer default:") or "RServer")
 TagsKey = str(input("Enter a Name for the Instance; RServer default:")  or "RServer")
 ```
 
-#### Create Ec2
+### Create Ec2
 **Notebook command**
 ```
 ## If everything went right above this makes your ec2 virtual machine
@@ -209,7 +209,7 @@ ec2.create_instances(
             'VolumeType': 'standard',
             'DeleteOnTermination' : True}}])
  ```
-#### Get Ec2 Attributes
+### Get Ec2 Attributes
 **Notebook command**
 ```
 ## Wait about 5 minutes before running this
@@ -231,8 +231,9 @@ print("The SSH Access Is: %s" %(dns_ssh))
 print("The Instance ID is: %s" %(instanceid))
 print("The Instance IP is: %s" %(instanceip))
 ```
-
-## Notebook command 
+### Modify Security Group Access Ports
+**Notebook command**
+```
 ## This will open access to Rstudio
 print(secGroupId)
 data = ec2client.authorize_security_group_ingress(
@@ -247,6 +248,43 @@ data = ec2client.authorize_security_group_ingress(
          'ToPort': 8787,
          'IpRanges': [{'CidrIp': '0.0.0.0/0'}]}
     ])
+```
+### SSH Connection to Ec2
+**Notebook command**
+```
+## Use your secure folder 
+# Connect to putty (hint you will need to put putty.exe in folder and reference below)
+## This will open up a ssh screen for accessing the Linux bash command line 
+from subprocess import Popen, PIPE
+Popen(['C:/rserver/putty.exe','-pw',sshPW, '-ssh', dns_ssh, '-i', PrivatekeyFile])
+```
+## Connect to R Studio and R Shiny in the Cloud!!!!!
+**Notebook command**
+```
+print("Link to RStudio: %s" %("http://%s"%(dns)+":8888"))
+print("Link to RSHiny: %s" %("http://%s"%(dns)+":80"))
+print("R Studio username is username")
+print("R Studio password is password")
+```
+## Load NHTS Data
+**Once connected to Rstudio enter the following in R
+**NHTS Household File**<br>
+**NHTS Person File**<br>
+**NHTS Vehicle File**<br>
+**NHTS Trip File**
+```
+install.packages("RCurl")
+library(RCurl)
+URL <- "http://nhts2016.s3.amazonaws.com/nhts_hh_16.csv"
+nhts_hh_16 <- getURL(URL)
+URL <- "http://nhts2016.s3.amazonaws.com/nhts_per_16.csv"
+nhts_per_16 <- getURL(URL)
+URL <- "http://nhts2016.s3.amazonaws.com/nhts_veh_16.csv"
+nhts_veh_16 <- getURL(URL)
+URL <- "http://nhts2016.s3.amazonaws.com/nhts_trip_16.csv"
+nhts_trip_16 <- getURL(URL)
+```
+
 
 
 
