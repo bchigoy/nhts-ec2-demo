@@ -74,7 +74,7 @@ In the command line enter:
     Default Region Name = us-east-1
     Default Data Format = json
 ```
-### Start Jupyter Notebook and Set  Up Ec2 to host your R NHTS Server<br>
+### Start Jupyter Notebook
 ```
 In Windows cmd type: jupyter notebook
 That should start your local notebook
@@ -99,10 +99,7 @@ Save as a .ppk to the same folder as the .pem
 Click the top right big red X
 ```
 
-## Jupyter for starting Ec2
-
-
-
+## Jupyter to Set Up Ec2 to host your R NHTS Server
 **From here on when indicated you can place commands**<br>
 **as indicated by -- ## Notebook command -- in your notebook**
 ```
@@ -111,6 +108,7 @@ Click the top right big red X
 ## python -m pip install --upgrade pip
 ```
 ## Install Packages
+
 ** Notebook command **
 ```
 import sys
