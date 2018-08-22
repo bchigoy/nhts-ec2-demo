@@ -84,7 +84,25 @@ Select Python 3
 You should then see "Untitled" at top of notebook
 Click this and rename as you wish
 ```
+
 ## Make a Private Key File
+```
+Open puttygen.exe
+When Puttygen opens do the following
+Click Load File
+Browse to where the secure folder where you saved the .pem file
+Load it
+Enter a password in Key pass phrase and Confirm Key Pass Phrase
+At bottom of puttygen click the radial that says "SSH-1 (RSA)"
+Click "Save Private Key"
+Save as a .ppk to the same folder as the .pem
+Click the top right big red X
+```
+
+## Jupyter for starting Ec2
+
+
+
 **From here on when indicated you can place commands**<br>
 **as indicated by -- ## Notebook command -- in your notebook**
 ```
@@ -92,6 +110,7 @@ Click this and rename as you wish
 ## run the following in cmd
 ## python -m pip install --upgrade pip
 ```
+## Install Packages
 ** Notebook command **
 ```
 import sys
@@ -108,3 +127,6 @@ import sys
 !{sys.executable} -m pip install pandas
 !{sys.executable} -m pip install tabulate
 ```
+**Notebook command**
+## Replace 'rserver' with the secure folder where you put putty
+Popen('C:/rserver/puttygen.exe')
