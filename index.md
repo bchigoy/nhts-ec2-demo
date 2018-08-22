@@ -14,10 +14,11 @@ Do so at https://aws.amazon.com
 #### Add User
 <img src="https://s3.amazonaws.com/teaching-aws/IAM3.PNG" width=20% height=20%>
 
-### Input User Name**<br>
-### Check Programatic Access**
+#### Input User Name
+#### Check Programatic Access
 <img src="https://s3.amazonaws.com/teaching-aws/IAM4.PNG" width=60% height=60%>
-** Check these Policies**
+
+#### Check these Policies
 ```
 AmazonEC2FullAccess
 AmazonS3FullAccess
